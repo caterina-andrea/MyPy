@@ -183,6 +183,33 @@ class Lexer(object):
                 return token.Token(token.FLOATVAL, s, line, col)
             else:
                 return token.Token(token.INTVAL, s, line, col)
+            '''decFlag = False
+            symbol= self.__peek()
+            while symbol != "" and symbol != "/n" and not symbol.isspace() and (symbol == "." or self.__isSign() == 0) and symbol != "#" :
+                if self.__peek() == "." and decFlag:
+                    raise error.MyPLError("Multiple decimal places", self.line, self.column)
+                elif not self.__peek().isdigit() and self.__peek() != ".":
+                    raise error.MyPLError('unexpected symbol "' + self.__peek() + '"', self.line, self.column)
+                elif self.__peek() == "." and not decFlag:
+                    if len(s) == 1 or (s[0] != "0" and len(s) > 1):
+                        decFlag = True
+                    else:
+                        raise error.MyPLError("Invalid float", self.line, self.column)
+                s += self.__read()
+                symbol = self.__peek()
+            for i in range(0,len(s)):
+                if s[i] == "." and decFlag:
+                    if len(s) == i+1:
+                        raise error.MyPLError("incorrect formatting '" + s + "'", line, col)
+                    else:
+                        return token.Token(token.FLOATVAL, s, line, col)
+                else:
+                    if len(s) == 1:
+                        return token.Token(token.INTVAL, s, line, col)
+                    elif s[0] != "0" and len(s) > 1:
+                        return token.Token(token.INTVAL, s, line, col)
+                    else:
+                        raise error.MyPLError("unexpected symbol '" + s[i] + "'", self.line, self.column-i)'''
         #LETTER    
         elif symbol.isalpha():    
             s+=self.__read()
