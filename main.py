@@ -2,13 +2,16 @@
 #
 # Author: Caterina Valdovinos
 # Description:
-#   Takes a source file written in MyPL and output the set of tokens 
-#	in the file
+#   Takes a source file written in MyPL and executes the parser and 
+#   pretty printer
 #----------------------------------------------------------------------
 
-import mypl_token as token 
-import mypl_lexer as lexer 
 import mypl_error as error 
+import mypl_lexer as lexer 
+import mypl_token as token 
+import mypl_parser as parser
+import mypl_ast as ast 
+import mypl_print_visitor as ast_printer 
 import sys
 
 def main(filename):
@@ -23,16 +26,11 @@ def main(filename):
         sys.exit(e)
         
 def my_py(file_stream):
-    try :
-        the_lexer = lexer.Lexer(file_stream)
-        the_token = the_lexer.next_token()
-        while the_token.tokentype != token.EOS: 
-            print(the_token)
-            the_token = the_lexer.next_token()
-        print(the_token)
-    except error.MyPLError as e:
-        print(e)
-        sys.exit(1)
+    the_lexer = lexer.Lexer(file_stream) 
+    the_parser = parser.Parser(the_lexer) 
+    stmt_list = the_parser.parse() 
+    print_visitor = ast_printer.PrintVisitor(sys.stdout) 
+    stmt_list.accept(print_visitor)
     
 if __name__ == '__main__':
     if len(sys.argv) != 2:
